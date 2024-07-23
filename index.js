@@ -68,7 +68,7 @@ async function handleFile() {
     const ab = await fileToArrayBuffer(currentFile)
     await test(async () => jsmd5(ab), "jsmd5 excl fileToArrayBuffer").then(append)
     await test(async () => fileToArrayBuffer(currentFile).then(jsmd5), "jsmd5 incl fileToArrayBuffer").then(append)
-    await test(async () =>  chunkjsmd5(currentFile) , "jsmd5 read file in chunks").then(append)
+    await test(async () => chunkjsmd5(currentFile) , "jsmd5 read file in chunks").then(append)
     await test(async () => md5jstest(ab), 'md5.js').then(append)
     await test(async () => puremd5(ab), "md5").then(append)
     await test(async () => cryptoESmd5(ab), "crypto-es").then(append)
