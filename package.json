@@ -1,0 +1,22 @@
+{
+  "name": "hashing_benchmark",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "budo index.js --live --open -- -p esmify",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "budo": "^11.8.4",
+    "crypto-es": "^2.1.0",
+    "js-md5": "^0.8.3",
+    "md5": "^2.3.0",
+    "md5.js": "^1.3.5"
+  },
+  "devDependencies": {
+    "esmify": "^2.1.1"
+  }
+}
