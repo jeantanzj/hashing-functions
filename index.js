@@ -13,27 +13,27 @@ async function time(func) {
     })
 }
 
-function cryptoESmd5(arraybuffer) {
+function runCryptoES(arraybuffer) {
     console.log(CryptoES.MD5(CryptoES.lib.WordArray.create(arraybuffer)).toString(
         CryptoES.enc.Base64,
     ))
 }
 
-function jsmd5(arraybuffer) {
+function runJsMD5(arraybuffer) {
     var x = jsMD5.md5.create();
     x.update(arraybuffer);
     console.log(x.base64())
 }
 
-function puremd5(arraybuffer) {
+function runMD5(arraybuffer) {
     console.log(Buffer.from(md5(new Uint8Array(arraybuffer)), 'hex').toString('base64'))
 }
 
-function md5jstest(arraybuffer) {
+function runMD5Js(arraybuffer) {
     console.log(new md5js().update(Buffer.from(arraybuffer)).digest('base64'))
 }
 
-function chunkjsmd5(currentFile) {
+function runJsMD5WithChunk(currentFile) {
     const fileSize = currentFile.size
     return new Promise(function (resolve, reject) {
         let x = jsMD5.md5.create();
@@ -101,12 +101,12 @@ async function handleFile() {
     append(`${currentFile.name} Size: ${currentFile.size / 1000000}MB`)
     await test(() => fileToArrayBuffer(currentFile), "Convert file to buffer").then(append)
     const ab = await fileToArrayBuffer(currentFile)
-    await test(async () => jsmd5(ab), "jsmd5 excl fileToArrayBuffer").then(append)
-    await test(async () => fileToArrayBuffer(currentFile).then(jsmd5), "jsmd5 incl fileToArrayBuffer").then(append)
-    await test(async () => chunkjsmd5(currentFile) , "jsmd5 read file in chunks").then(append)
-    await test(async () => md5jstest(ab), 'md5.js').then(append)
-    await test(async () => puremd5(ab), "md5").then(append)
-    await test(async () => cryptoESmd5(ab), "crypto-es").then(append)
+    await test(async () => runJsMD5(ab), "jsmd5 excl fileToArrayBuffer").then(append)
+    await test(async () => fileToArrayBuffer(currentFile).then(runJsMD5), "jsmd5 incl fileToArrayBuffer").then(append)
+    await test(async () => runJsMD5WithChunk(currentFile) , "jsmd5 read file in chunks").then(append)
+    await test(async () => runMD5Js(ab), 'md5.js').then(append)
+    await test(async () => runMD5(ab), "md5").then(append)
+    await test(async () => runCryptoES(ab), "crypto-es").then(append)
 }
 
 
