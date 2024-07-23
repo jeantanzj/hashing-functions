@@ -66,9 +66,61 @@ async function handleFile() {
     append(`${currentFile.name} Size: ${currentFile.size / 1000000}MB`)
     await test(() => fileToArrayBuffer(currentFile), "Convert file to buffer").then(append)
     const ab = await fileToArrayBuffer(currentFile)
-    await test(async () => jsmd5(ab), "jsmd5").then(append)
+    await test(async () => jsmd5(ab), "jsmd5 excl fileToArrayBuffer").then(append)
+    await test(async () => fileToArrayBuffer(currentFile).then(jsmd5), "jsmd5 incl fileToArrayBuffer").then(append)
+    await test(async () =>  chunkjsmd5(currentFile) , "jsmd5 read file in chunks").then(append)
     await test(async () => md5jstest(ab), 'md5.js').then(append)
     await test(async () => puremd5(ab), "md5").then(append)
     await test(async () => cryptoESmd5(ab), "crypto-es").then(append)
-
 }
+
+function chunkjsmd5(currentFile) {
+    const fileSize = currentFile.size
+    return new Promise(function (resolve, reject) {
+        let x = jsMD5.md5.create();
+        let offset = 0
+        let chunkSize = 1024 * 1024
+        const reader = new FileReader()
+
+        function keepReading(){
+            reader.readAsArrayBuffer(currentFile.slice(offset, offset+chunkSize))
+       }
+
+        reader.onerror = function onerror(e) {
+            reject(e.target.error)
+        }
+
+        reader.onload = function onload(e) {
+            if (reader.error) {
+                return reject(reader.error);
+            }
+            x.update(reader.result)
+            offset += reader.result.byteLength;
+            if (offset >= fileSize) {
+                const value = x.base64()
+                console.log(value)
+                return resolve(value);
+            } else{
+                keepReading()
+            }
+        }
+
+        keepReading()
+      
+    })
+}
+
+// async function handleFileInChunks() {
+//     const [currentFile] = this.files; 
+//     append('-----------chunk')
+//     append(`${currentFile.name} Size: ${currentFile.size / 1000000}MB`)
+   
+//     await test(async () => {
+//         const ab = await fileToArrayBuffer(currentFile)
+//         jsmd5(ab)
+//     }, "jsmd5", 10).then(append)
+
+//     await test(async () => 
+//         chunkjsmd5(currentFile)
+//     , "chunk jsmd5", 10).then(append)
+// }
