@@ -41,9 +41,9 @@ function runJsMD5WithChunk(currentFile) {
         let chunkSize = 1024 * 1024
         const reader = new FileReader()
 
-        function keepReading(){
-            reader.readAsArrayBuffer(currentFile.slice(offset, offset+chunkSize))
-       }
+        function keepReading() {
+            reader.readAsArrayBuffer(currentFile.slice(offset, offset + chunkSize))
+        }
 
         reader.onerror = function onerror(e) {
             reject(e.target.error)
@@ -59,12 +59,18 @@ function runJsMD5WithChunk(currentFile) {
                 const value = x.base64()
                 console.log(value)
                 return resolve(value);
-            } else{
+            } else {
                 keepReading()
             }
         }
         keepReading()
     })
+}
+
+function runSHA256(arraybuffer) {
+    return crypto.subtle.digest('SHA-256', arraybuffer).then(hashBuffer => CryptoES.enc.Base64.stringify(
+        CryptoES.lib.WordArray.create(hashBuffer),
+    ))
 }
 
 
@@ -103,10 +109,11 @@ async function handleFile() {
     const ab = await fileToArrayBuffer(currentFile)
     await test(async () => runJsMD5(ab), "jsmd5 excl fileToArrayBuffer").then(append)
     await test(async () => fileToArrayBuffer(currentFile).then(runJsMD5), "jsmd5 incl fileToArrayBuffer").then(append)
-    await test(async () => runJsMD5WithChunk(currentFile) , "jsmd5 read file in chunks").then(append)
+    await test(async () => runJsMD5WithChunk(currentFile), "jsmd5 read file in chunks").then(append)
     await test(async () => runMD5Js(ab), 'md5.js').then(append)
     await test(async () => runMD5(ab), "md5").then(append)
     await test(async () => runCryptoES(ab), "crypto-es").then(append)
+    await test(async ()=> runSHA256(ab), "sha256").then(append)
 }
 
 
