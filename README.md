@@ -70,3 +70,27 @@ jsmd5 excl fileToArrayBuffer = 14632.479999995232
 jsmd5 incl fileToArrayBuffer = 69920.49999999702
 ```
 
+### Sha 256
+The crypto.subtle library blows all the md5 libraries out of the water
+
+```
+ForBiggerBlazesVideo.mp4 Size: 2.134337MB
+Convert file to buffer = 21.01000000834465
+jsmd5 excl fileToArrayBuffer = 48.87999999523163
+sha256 = 5.959999990463257
+-----------
+corgi.mov Size: 36.035217MB
+Convert file to buffer = 207.79000000059605
+jsmd5 excl fileToArrayBuffer = 704.7499999940395
+sha256 = 87.34000000357628
+-----------
+GoogleIO-2014-CastingToTheFutureVideo.mp4 Size: 357.86886MB
+Convert file to buffer = 7179.720000001788
+jsmd5 excl fileToArrayBuffer = 7217.379999992251
+sha256 = 1518.119999998808
+-----------
+Google_I_O_2013_KeynoteVideo.mp4 Size: 1666.114741MB
+Convert file to buffer = 3736.75
+jsmd5 excl fileToArrayBuffer = 55514.45000000298
+sha256 = 9051.500000014901
+```
