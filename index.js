@@ -67,10 +67,8 @@ function runJsMD5WithChunk(currentFile) {
     })
 }
 
-function runSHA256(arraybuffer) {
-    return crypto.subtle.digest('SHA-256', arraybuffer).then(hashBuffer => CryptoES.enc.Base64.stringify(
-        CryptoES.lib.WordArray.create(hashBuffer),
-    ))
+async function runSHA256(arraybuffer) {
+    console.log(await crypto.subtle.digest('SHA-256', arraybuffer).then(h => Buffer.from(h).toString('base64')))
 }
 
 
@@ -102,18 +100,18 @@ function append(text) {
 }
 
 async function handleFile() {
-    const [currentFile] = this.files; /* now you can work with the file list */
+    const [currentFile] = this.files;
     append('-----------')
-    append(`${currentFile.name} Size: ${currentFile.size / 1000000}MB`)
-    await test(() => fileToArrayBuffer(currentFile), "Convert file to buffer").then(append)
+    append(`Filename = ${currentFile.name} Size = ${currentFile.size / 1000000}MB`)
+    await test(() => fileToArrayBuffer(currentFile), "Convert file to buffer", 2).then(append)
     const ab = await fileToArrayBuffer(currentFile)
-    await test(async () => runJsMD5(ab), "jsmd5 excl fileToArrayBuffer").then(append)
+    await test(async () => runJsMD5(ab), "jsmd5 excl fileToArrayBuffer", 2).then(append)
     await test(async () => fileToArrayBuffer(currentFile).then(runJsMD5), "jsmd5 incl fileToArrayBuffer").then(append)
     await test(async () => runJsMD5WithChunk(currentFile), "jsmd5 read file in chunks").then(append)
     await test(async () => runMD5Js(ab), 'md5.js').then(append)
     await test(async () => runMD5(ab), "md5").then(append)
     await test(async () => runCryptoES(ab), "crypto-es").then(append)
-    await test(async ()=> runSHA256(ab), "sha256").then(append)
+    await test(async () => runSHA256(ab), "sha256", 2).then(append)
 }
 
 
